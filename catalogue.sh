@@ -56,7 +56,7 @@ VALIDATE $? "Downloading the application"
 cd /app &>> $LOGFILE
 VALIDATE $? "Change directory"
 
-unzip -o /tmp/catalogue.zip && $LOGFILE
+unzip -o /tmp/catalogue.zip &>> $LOGFILE
 VALIDATE $? "Unzipping the application"
 
 npm install &>> $LOGFILE
