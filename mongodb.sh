@@ -21,11 +21,26 @@ VALIDATE(){
 }
 if [ $ID -ne 0 ]
 then
-   echo -e "ERROR:: $R please run with root access"
+   echo -e " $R ERROR::please run with root access"
    exit 1
 else
-   echo -e "$ $G you are root user"
+   echo -e "$ you are root user"
 fi
 
 cp mongo.repo /etc/yum.repos.d/mongo.repo &>> $LOGFILE
 VALIDATE $? "Copied mongodb repo"
+
+dnf install mongodb-org -y &>> $LOGFILE
+VALIDATE $? "installing mongodb" 
+
+systemctl enable mongod &>> $LOGFILE
+VALIDATE $? "Enabling mongodb"
+
+systemctl start mongod &>> $LOGFILE
+VALIDATE $? "Start mangodb"
+
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf &>> $LOGFILE
+VALIDATE $? "Remote access to mongodb"
+
+systemctl restart mongod &>> $LOGFILE
+VALIDATE $? "Restarting Mongodb"
