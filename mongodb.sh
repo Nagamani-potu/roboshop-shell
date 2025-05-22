@@ -12,7 +12,7 @@ LOGFILE="/tmp/$0-$TIMESTAMP.log"
 echo "Scripting started executing at $TIMESTAMP"  &>> $LOGFILE
 
 VALIDATE(){
-    if [ $? -ne 0 ]
+    if [ $1 -ne 0 ]
     then 
        echo -e "ERROR:: $2 ...$R is failed $N"
        exit 1
