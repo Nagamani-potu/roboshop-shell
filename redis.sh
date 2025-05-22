@@ -19,8 +19,7 @@ else
    echo -e " $2 ...$G success $N"
 fi
 }
-
-if [ $ID - ne 0 ]
+if [ $ID -ne 0 ]
 then
    echo -e " $R ERROR:: Please run with root access $N"
    exit 1
