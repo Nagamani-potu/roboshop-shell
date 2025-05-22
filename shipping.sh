@@ -79,7 +79,7 @@ VALIDATE $? "Loading schema"
 mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql &>> $LOGFILE
 VALIDATE $? "loading data to the user"
 
-mysql -h $MYUSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql &>> $LOGFILE
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql &>> $LOGFILE
 VALIDATE $? "loading data"
 
 systemctl restart shipping &>> $LOGFILE
