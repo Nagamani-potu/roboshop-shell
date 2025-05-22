@@ -5,80 +5,96 @@ R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
+MONGDB_HOST=mongodb.daws76s.online
+
 TIMESTAMP=$(date +%F-%H-%M-%S)
 LOGFILE="/tmp/$0-$TIMESTAMP.log"
-MONGODB_HOST="mongodb.devopstraining.space"
 
-echo "scripting started execution at $TIMESTAMP" &>> $LOGFILE
+echo "script stareted executing at $TIMESTAMP" &>> $LOGFILE
 
-Validate(){
-    if [ $? -ne 0 ]
-then 
-  echo -e " $2...$R failed $N"
-  exit 1
-else
-   echo -e " $2 ...$G success $N"
-fi
+VALIDATE(){
+    if [ $1 -ne 0 ]
+    then
+        echo -e "$2 ... $R FAILED $N"
+        exit 1
+    else
+        echo -e "$2 ... $G SUCCESS $N"
+    fi
 }
 
 if [ $ID -ne 0 ]
 then
-   echo -e " $R ERROR: Please run with root access $N"
-   exit 1
-else 
-  echo -e " $G you are a root user"
-fi
+    echo -e "$R ERROR:: Please run this script with root access $N"
+    exit 1 # you can give other than 0
+else
+    echo "You are root user"
+fi # fi means reverse of if, indicating condition end
 
 dnf module disable nodejs -y &>> $LOGFILE
-VALIDATE $? "Disabling current nodejs"
 
-dnf module enable nodejs:18 -y &>> $LOGFILE
-VALIDATE $? "Enabling nodejs"
+VALIDATE $? "Disabling current NodeJS"
 
-dnf install nodejs -y &>> $LOGFILE
-VALIDATE $? "Installing nodejs"
+dnf module enable nodejs:18 -y  &>> $LOGFILE
 
-id roboshop
+VALIDATE $? "Enabling NodeJS:18"
+
+dnf install nodejs -y  &>> $LOGFILE
+
+VALIDATE $? "Installing NodeJS:18"
+
+id roboshop #if roboshop user does not exist, then it is failure
 if [ $? -ne 0 ]
-then 
+then
     useradd roboshop
-    VALIDATE $? "creating roboshop user"
+    VALIDATE $? "roboshop user creation"
 else
-    echo -e "roboshop user already exist $Y Skipping $N"
+    echo -e "roboshop user already exist $Y SKIPPING $N"
 fi
 
-mkdir -p /app &>> $LOGFILE
-VALIDATE $? "Creating directory"
+mkdir -p /app
 
-curl -L -o /tmp/user.zip https://roboshop-builds.s3.amazonaws.com/user.zip &>> $LOGFILE
-VALIDATE $? "Downloading Application"
+VALIDATE $? "creating app directory"
 
-cd /app  &>> $LOGFILE
-VALIDATE $? "Changing directory"
+curl -o /tmp/user.zip https://roboshop-builds.s3.amazonaws.com/user.zip  &>> $LOGFILE
 
-unzip -o /tmp/user.zip &>> $LOGFILE
-VALIDATE $? "Unzipping the application"
+VALIDATE $? "Downloading user application"
+
+cd /app 
+
+unzip -o /tmp/user.zip  &>> $LOGFILE
+
+VALIDATE $? "unzipping user"
 
 npm install  &>> $LOGFILE
+
 VALIDATE $? "Installing dependencies"
 
-cp /home/centos/roboshop-shell/user.service /etc/systemd/system/user.service &>> LOGFILE
-VALIDATE $? "Copying user service"
+cp /home/centos/roboshop-shell/user.service /etc/systemd/system/user.service
+
+VALIDATE $? "Copying user service file"
 
 systemctl daemon-reload &>> $LOGFILE
-VALIDATE $? "Reloading user deamon"
 
-systemctl enable user &>> $$LOGFILE
-VALIDATE $? "Enabling user"
+VALIDATE $? "user daemon reload"
+
+systemctl enable user &>> $LOGFILE
+
+VALIDATE $? "Enable user"
 
 systemctl start user &>> $LOGFILE
+
 VALIDATE $? "Starting user"
 
-cp /home/centos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo &>> $LOGFILE
-VALIDATE $? "Copying mongodb repo to user"
+cp /home/centos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo
+
+VALIDATE $? "copying mongodb repo"
 
 dnf install mongodb-org-shell -y &>> $LOGFILE
-VALIDATE $? "Installing mongodb client"
 
-mongo --host $MONGODB_HOST </app/schema/user.js &>> $LOGFILE
-VALIDATE $? "loading user data into mongodb"
+VALIDATE $? "Installing MongoDB client"
+
+mongo --host $MONGDB_HOST </app/schema/user.js &>> $LOGFILE
+
+VALIDATE $? "Loading user data into MongoDB"
+
+
