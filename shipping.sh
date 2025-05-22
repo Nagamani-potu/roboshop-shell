@@ -7,7 +7,7 @@ Y="\e[33m"
 N="\e[0m"
 TIMESTAMP=$(date +%F-%H-%M-%S)
 LOGFILE="/tmp/$0-$TIMESTAMP.log"
-MYSQL_HOST="mysql.devopstraining.space"
+MYSQL_HOST=mysql.devopstraining.space
 
 echo "sripting started executaion at $TIMESTAMP" &>> $LOGFILE
 
