@@ -1,7 +1,7 @@
 #!/bin/bash
 
-AMI_ID="ami-03265a0778a880afb"
-SG_ID="sg-087e7afb3a936fce7"
+AMI_ID="ami-0b4f379183e5706b9"
+SG_ID="sg-07891a5d518ef74be"
 INSTANCES=("mongodb" "redis" "mysql" "rabbitmq" "catalogue" "cart" "user" "shipping" "payment" "web")
 
 for i in "${INSTANCES[@]}"
@@ -13,7 +13,7 @@ do
     INSTANCE_TYPE="t2.micro"
   fi
 
-  aws ec2 run-instances --image-id ami-03265a0778a880afb --instance-type t2.micro --security-group-ids sg-087e7afb3a936fce7
+  aws ec2 run-instances --image-id ami-0b4f379183e5706b9 --instance-type $INSTANCE_TYPE --security-group-ids sg-07891a5d518ef74be
 done
 
 
