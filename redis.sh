@@ -29,25 +29,33 @@ else
 fi
 
 dnf install https://rpms.remirepo.net/enterprise/remi-release-8.5.rpm -y &>> $LOGFILE
+
 VALIDATE $? "Installing remi relase file"
 
 dnf module reset redis -y &>> $LOGFILE
+
 VALIDATE $? "Resetting redis module"
 
 dnf module enable redis:remi-6.2 -y &>> $LOGFILE
+
 VALIDATE $? "Enabling redis module"
 
 dnf install redis -y &>> $LOGFILE
+
 VALIDATE $? "Installing redis"
 
-sed -i 's/127.0.0.1/0.0.0.0/g' /etc/redis/redis.conf
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/redis/redis.conf &>> $LOGFILE
+
 VALIDATE $? "adding remote access"
 
 systemctl enable redis &>> $LOGFILE
+
 VALIDATE $? "enabling redis"
 
 systemctl start redis &>> $LOGFILE
+
 VALIDATE $? "Starting redis"
 
 systemctl status redis &>> $LOGFILE
+
 VALIDATE $? "To check status of redis"
